@@ -1,0 +1,17 @@
+html {
+  font-size: 10px;
+}
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 1.6rem;
+}
+
+.wrapper {
+  padding: $basePadding;
+}
+
+.content-wrapper {
+  width: 860px;
+  margin: 0 auto;
+}

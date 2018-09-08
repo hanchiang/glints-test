@@ -1,3 +1,5 @@
+const { ObjectID } = require('mongodb');
+
 const db = require('../db');
 
 
@@ -6,37 +8,88 @@ exports.getStores = async (req, res) => {
   res.json(stores);
 }
 
+exports.getCollection = async (req, res) => {
+  const results = await db.get().collection('users').aggregate([
+    { $match: { _id: req.sessionID } },
+    { $unwind: { path: '$collections' }},
+    { $unwind: { path: '$collections.stores' }},
+    { $lookup: 
+      {
+        from: 'stores',
+        localField: 'collections.stores',
+        foreignField: '_id',
+        as: 'collections.storeInfo'
+      }
+    },
+    { $project:
+      {
+        'collections._id': 1,
+        'collections.name': 1,
+        'collections.storeInfo._id': 1,
+        'collections.storeInfo.name': 1
+      }
+    },
+    { $unwind: {
+      path: '$collections.storeInfo'
+    }},
+    { $group: {
+        _id: '$collections._id',
+        name: { $first: '$collections.name' },
+        stores: { $push: '$collections.storeInfo' }
+      }
+    }
+  ])
+  .toArray();
+  res.json(results);
+}
+
 exports.createCollection = async (req, res) => {
   const result = await db.get().collection('users').updateOne(
     { _id: req.sessionID },
     {
       $push: {
         collections: {
+          _id: ObjectID(),
           name: req.body.name,
           stores: []
         }
       }
     }
   );
-  console.log(result);
-  handleAfterUpdate(result, `Successfully created collection ${req.body.name}!`, 'Unable to create collection')
+
+  if (result.result.ok === 1) {
+    res.json({ message: 'Successfully created collection' });
+  } else {
+    throw new Error('Unable to create collection');
+  }
 }
 
 exports.updateCollection = async (req, res) => {
+  // add(store) | delete(store) | update(collection name)
+  let operation;
+  let update = {};
+
+  if (req.body.operation === 'add') operation = '$push';
+  else if (req.body.operation === 'delete') operation = '$pull';
+  else if (req.body.operation === 'update') operation = '$set';
+  else throw new Error('This operation is not allowed');
+
+  if (operation === '$set') {
+    update = { 'collections.$.name': req.body.name };
+  } else {
+    update = { 'collections.$.stores': ObjectID(req.body.store) };
+  }
+
   const result = await db.get().collection('users').updateOne(
-    { _id: req.sessionID, 'collections.name': req.body.name },
-    { $push: {
-      'collections.$.stores': req.body.store
-    }}
+    { _id: req.sessionID, 
+      'collections._id': ObjectID(req.body._id)
+    },
+    { [operation]: update }
   );
 
-  handleAfterUpdate(result`Successfully updated collection ${req.body.name}!`, 'Unable to update collection')
-}
-
-function handleAfterUpdate(result, successMessage, errorMessage) {
   if (result.result.ok === 1) {
-    res.json({ message: successMessage });
+    res.json({ message: 'Successfully updated collection' });
   } else {
-    throw new Error(errorMessage);
+    throw new Error('Unable to update collection');
   }
 }

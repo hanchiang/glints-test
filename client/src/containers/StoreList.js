@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-export default class StoreList extends Component {
+import StoreItem from './StoreItem';
+
+class StoreList extends Component {
   render() {
     return (
       <div className="wrapper">
@@ -10,11 +13,18 @@ export default class StoreList extends Component {
             <span>Opening time</span>
           </div>
           <div className="list-body">
-            <span className="store-name">BBQ!</span>
-            <span className="store-open-time">monday</span>
+            {
+              this.props.stores.map(store => <StoreItem store={store} key={store._id} />)
+            }
           </div>
         </div>
       </div>
     )
   }
 }
+
+const mapStateToProps = (state) => ({
+  stores: state.storeState.stores
+});
+
+export default connect(mapStateToProps)(StoreList);

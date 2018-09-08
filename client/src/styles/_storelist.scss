@@ -12,6 +12,14 @@
   border: 1px solid #bbb;
   border-top: none;
   padding: $mediumPadding;
+}
+
+.store-item {
   display: flex;
   justify-content: space-between;
+}
+
+.store-timeslots {
+  display: flex;
+  flex-direction: column;
 }

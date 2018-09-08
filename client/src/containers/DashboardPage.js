@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import NavBar from '../components/NavBar';
 import StoreList from './StoreList';
+import { startSetStores } from '../redux/action/storeAction';
 
-export default class Dashboard extends Component {
+class DashboardPage extends Component {
   constructor(props) {
     super(props)
+  }
+
+  componentDidMount() {
+    this.props.setExpense();
   }
 
   render() {
@@ -17,3 +23,9 @@ export default class Dashboard extends Component {
     )
   }
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  setExpense: () => dispatch(startSetStores())
+})
+
+export default connect(null, mapDispatchToProps)(DashboardPage);

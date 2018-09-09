@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 
 import NavBar from '../components/NavBar';
 import StoreList from './StoreList';
-import { startSetStores } from '../redux/action/storeAction';
+import StoreFilter from './StoreFilter';
+import { startSetStores, setStoresLoading } from '../redux/action/storeAction';
 
 class DashboardPage extends Component {
   constructor(props) {
@@ -11,13 +12,15 @@ class DashboardPage extends Component {
   }
 
   componentDidMount() {
-    this.props.setExpense();
+    this.props.setStoresLoading();
+    this.props.setStores();
   }
 
   render() {
     return (
       <div>
         <NavBar />
+        <StoreFilter />
         <StoreList />
       </div>
     )
@@ -25,7 +28,8 @@ class DashboardPage extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  setExpense: () => dispatch(startSetStores())
+  setStores: () => dispatch(startSetStores()),
+  setStoresLoading: () => dispatch(setStoresLoading(true))
 })
 
 export default connect(null, mapDispatchToProps)(DashboardPage);

@@ -131,15 +131,16 @@ module.exports = (stores) => {
   let result = {};
   let timings = [];
 
-  for (store of stores) {
+  for (const store of stores) {
     result = {};
     timings = [];
     result._id = store._id;
     result.name = store.name;
     result.slug = store.slug;
+    result.timeslots = store.timeslots;
 
     // timings: an array of string `${day}, ${time}`
-    for (timeslot of store.timeslots) {
+    for (const timeslot of store.timeslots) {
       const day = handleDay(timeslot.days);
       const time = handleTime(timeslot.time);
       timings.push(`${day}, ${time}`);
@@ -147,6 +148,5 @@ module.exports = (stores) => {
     result.timings = timings;
     results.push(result)
   }
-  console.log(results);
   return results;
 }

@@ -29,7 +29,28 @@ module.exports = {
           fallback: 'style-loader',
           use: 'css-loader'
         })
-      }
+      },
+      {
+        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'fonts/'
+          }
+        }]
+      },
+      {
+        test: /\.(png|jpg|gif)$/i,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192
+            }
+          }
+        ]
+      },
     ]
   },
   plugins: [
@@ -44,5 +65,6 @@ module.exports = {
     contentBase: path.join(__dirname, 'public'),
     hot: true,
     historyApiFallback: true
-  }
+  },
+  devtool: 'inline-source-map'
 }

@@ -42,7 +42,7 @@ function formatDays(daysString) {
 
 	// Check whether there is more than 1 day range
 	const days = daysString.split(',').map(day => day.trim());
-	for (day of days) {
+	for (const day of days) {
 		if (day.includes('-')) {
 			result = [...result, ...(handleDayRange(day))];
 		} else {
@@ -103,7 +103,7 @@ function formatDateTime(timeslotString) {
 	const results = [];
 	// Check whether there is more than 1 timeslot block
 	const timeslots = timeslotString.split('/');
-	for (timeslot of timeslots) {
+	for (const timeslot of timeslots) {
 		const match = timeslot.trim().match(re);
 		const [_, days, fromTime, toTime] = match;
 
@@ -120,7 +120,7 @@ function formatData(stores) {
 	const results = [];
 	let slugRegex;
 
-	for (store of stores) {
+	for (const store of stores) {
 		const result = {};
 		const [name, timeslot] = store;
 		result.name = name;

@@ -1,5 +1,6 @@
 import { ADD_ERROR, REMOVE_ERROR } from '../action/actionTypes';
 
+// {id: 1, message: 'oh no'}
 export default function errorReducer(state = [], action) {
   switch(action.type) {
     case ADD_ERROR:

@@ -2,10 +2,11 @@
 // stores
 export const START_SET_STORES = 'START_SET_STORES';
 export const SET_STORES = 'SET_STORES';
+export const SET_STORES_LOADING = 'SET_STORES_LOADING';
 
 // filters
-export const SHOW_ALL = 'SHOW_ALL';
 export const SET_FILTER = 'SET_FILTER';
+export const CLEAR_FILTER = 'CLEAR_FILTER';
 
 // user
 export const UPDATE_COLLECTION = 'UPDATE_COLLECTION';

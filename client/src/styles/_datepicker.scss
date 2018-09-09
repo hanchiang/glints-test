@@ -1,0 +1,35 @@
+.datepicker {
+  margin-top: $bigMargin;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .cancel-icon {
+    margin-left: $baseMargin;
+    color: $grey; 
+
+    &:hover {
+      cursor: pointer;
+      color: darken($grey, 10%);
+    }
+  }
+}
+
+.rdt {
+  display: flex;
+  justify-content: center;
+
+  & > input.form-control {
+    width: 260px;
+    padding: $basePadding;
+    text-align: center;
+  }
+
+  .rdtTimeToggle, .rdtSwitch {
+    background-color: $lightGrey;
+
+    &:hover {
+      background-color: darken($lightGrey, 5%);
+    }
+  }
+}

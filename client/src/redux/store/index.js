@@ -1,15 +1,9 @@
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 
-import { SHOW_ALL } from '../action/actionTypes';
 import rootReducer from '../reducer';
 import rootSaga from '../saga';
 
-const initialState = {
-  user: null,
-  stores: [],
-  filter: SHOW_ALL
-}
 
 const sagaMiddleware = createSagaMiddleware();
 

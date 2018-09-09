@@ -1,17 +1,21 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function StoreItem(props) {
   return (
     <div className="store-item">
       <div>{props.store.name}</div>
+      <div className="store-timings">
         {
-          props.store.timeslots.map((timeslot, i) => 
-          <div key={i} className="store-timeslots">
-            <span>{timeslot.days}</span>
-            <span>{timeslot.time}</span>
-          </div>
+          props.store.timings.map((timing, i) => 
+            <div className="store-timing" key={i}>{timing}</div>
           )
         }
+      </div>
     </div>
   )
+}
+
+StoreItem.propTypes = {
+  store: PropTypes.object.isRequired
 }

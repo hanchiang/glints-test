@@ -1,11 +1,12 @@
 const { ObjectID } = require('mongodb');
 
 const db = require('../db');
+const formatReadableData = require('../utils/formatReadableData');
 
 
 exports.getStores = async (req, res) => {
   const stores = await db.get().collection('stores').find({}).toArray();
-  res.json(stores);
+  res.json(formatReadableData(stores));
 }
 
 exports.getCollection = async (req, res) => {
@@ -80,8 +81,9 @@ exports.updateCollection = async (req, res) => {
     update = { 'collections.$.stores': ObjectID(req.body.store) };
   }
 
+  // TODO: remove ObjectID() for collections._id
   const result = await db.get().collection('users').updateOne(
-    { _id: req.sessionID, 
+    { _id: req.sessionID,
       'collections._id': ObjectID(req.body._id)
     },
     { [operation]: update }

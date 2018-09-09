@@ -16,7 +16,8 @@ app.use(session({
 }));
 
 // Create a user for each session
-app.use('/', async (req, res, next) => {
+app.use(async (req, res, next) => {
+  console.log('session id: ' + req.sessionID);
   if (!req.session.isUserCreated) {
     try {
       const result = await db.get().collection('users').insertOne({
@@ -29,6 +30,13 @@ app.use('/', async (req, res, next) => {
       next(err);
     }
   }
+  next();
+})
+
+// enable CORS
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 })
 

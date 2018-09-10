@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
 
 router.get('/stores', catchErrors(storeController.getStores));
 
-router.get('/users/collections', catchErrors(storeController.getCollection));
+router.get('/users/collections', catchErrors(storeController.getUserCollection));
 router.post('/users/collections', catchErrors(storeController.createCollection));
 router.patch('/users/collections', catchErrors(storeController.updateCollection));
 

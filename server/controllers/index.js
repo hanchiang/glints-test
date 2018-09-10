@@ -1,4 +1,5 @@
 const { ObjectID } = require('mongodb');
+const slug = require('slug');
 
 const db = require('../db');
 const formatReadableData = require('../utils/formatReadableData');
@@ -9,7 +10,7 @@ exports.getStores = async (req, res) => {
   res.json(formatReadableData(stores));
 }
 
-exports.getCollection = async (req, res) => {
+exports.getUserCollection = async (req, res) => {
   const results = await db.get().collection('users').aggregate([
     { $match: { _id: req.sessionID } },
     { $unwind: { path: '$collections' }},
@@ -24,10 +25,14 @@ exports.getCollection = async (req, res) => {
     },
     { $project:
       {
+        '_id': 1,
+        'name': 1,
         'collections._id': 1,
         'collections.name': 1,
+        'collections.slug': 1,
         'collections.storeInfo._id': 1,
-        'collections.storeInfo.name': 1
+        'collections.storeInfo.name': 1,
+        'collections.storeInfo.slug': 1
       }
     },
     { $unwind: {
@@ -36,30 +41,53 @@ exports.getCollection = async (req, res) => {
     { $group: {
         _id: '$collections._id',
         name: { $first: '$collections.name' },
+        slug: { $first: '$collections.slug' },
         stores: { $push: '$collections.storeInfo' }
       }
     }
   ])
   .toArray();
-  res.json(results);
+  res.json({ id: req.sessionID, collections: results });
 }
 
+// TODO: Create and add to collection, instead of just creating collection.
+// Because it breaks the getCollection() pipeline and wont return empty collections.
 exports.createCollection = async (req, res) => {
-  const result = await db.get().collection('users').updateOne(
+  if (!req.body.store || !req.body.name) {
+    throw new Error('Method signatures don\'t match')
+  }
+
+  const user = await db.get().collection('users').findOne({ _id: req.sessionID });
+  let colSlug = slug(req.body.name);
+  let slugRegex = new RegExp(`${colSlug}(-\d+)?`)
+  const sameSlugs = user.collections
+    .map(col => col.slug.match(slugRegex))
+    .filter(item => item != null);
+
+  if (sameSlugs.length > 0) {
+    colSlug = colSlug + '-' + (sameSlugs.length + 1);
+  }
+
+  const result = await db.get().collection('users').findOneAndUpdate(
     { _id: req.sessionID },
     {
       $push: {
         collections: {
           _id: ObjectID(),
           name: req.body.name,
-          stores: []
+          slug: colSlug,
+          stores: [ObjectID(req.body.store)]
         }
       }
-    }
+    },
+    { returnOriginal: false }
   );
 
-  if (result.result.ok === 1) {
-    res.json({ message: 'Successfully created collection' });
+  if (result.ok === 1) {
+    res.json({ 
+      message: 'Successfully created collection', 
+      data: result.value.collections[result.value.collections.length - 1]
+    });
   } else {
     throw new Error('Unable to create collection');
   }

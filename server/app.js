@@ -11,14 +11,14 @@ const db = require('./db');
 app.use(session({
   secret: process.env.SECRET,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   store: new MongoStore({ url: process.env.DATABASE })
 }));
 
 // Create a user for each session
 app.use(async (req, res, next) => {
-  console.log('session id: ' + req.sessionID);
-  if (!req.session.isUserCreated) {
+  console.log(`session id: ${req.sessionID}, req method: ${req.method}`);
+  if (req.method !== 'OPTIONS' && !req.session.isUserCreated) {
     try {
       const result = await db.get().collection('users').insertOne({
         _id: req.sessionID,
@@ -38,6 +38,7 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:8080");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', ['GET', 'PUT', 'POST', 'DELETE', 'PATCH']);
   next();
 })
 

@@ -32,3 +32,30 @@ body {
 .error-hide {
   padding: 0;
 }
+
+.link {
+  text-decoration: none;
+  color: #fff;
+
+  &:hover {
+    color: darken(#fff, 10%);
+  }
+}
+
+.active-link {
+  color: #ddd;
+
+  &:hover {
+    color: darken(#ddd, 10%);
+  }
+}
+
+.cancel-icon {
+    margin-left: $baseMargin;
+    color: $grey; 
+
+    &:hover {
+      cursor: pointer;
+      color: darken($grey, 10%);
+    }
+  }

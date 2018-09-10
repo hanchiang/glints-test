@@ -1,0 +1,31 @@
+.button {
+  border: none;
+  background-color: #fafafa;
+  border-radius: 5px;
+  padding: $basePadding;
+  -moz-box-shadow: 1px 1px 5px -1px #333;
+	-webkit-box-shadow: 1px 1px 5px -1px #333;
+	box-shadow: 1px 1px 5px -1px #333;
+
+  &:hover {
+    cursor: pointer;
+    background-color: darken(#fafafa, 2%);
+  }
+
+  &.create-collection-button {
+    color: white;
+    background-color: lighten($navbarBlue, 25%);
+
+    &:hover {
+      background-color: lighten($navbarBlue, 20%);
+    }
+  }
+
+  &.cancel-button {
+    background-color: lighten($cancelRed, 15%);
+
+    &:hover {
+      background-color: lighten($cancelRed, 10%);
+    }
+  }
+}

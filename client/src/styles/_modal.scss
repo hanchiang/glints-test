@@ -1,0 +1,73 @@
+.ReactModal__Overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+
+  &--after-open {
+    opacity: 1;
+  }
+
+  &--before-close {
+    opacity: 0;
+  }
+  
+  .ReactModal__Content.ReactModal__Content--after-open.modal {
+    width: 40rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: darken(#fff, 3%);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: $bigPadding;
+
+    .modal-scroll {
+      max-height: 35rem;
+      overflow-y: auto;
+      width: 40rem;
+      padding: $bigPadding 0;
+
+      .modal-collections {
+        margin-right: $baseMargin;
+      }
+
+      .add-collection-input {
+        margin-right: $baseMargin;
+      }
+
+      .add-collection-button {
+        background-color: #fff;
+        margin-bottom: $baseMargin;
+
+        &:hover {
+          background-color: darken(#fff, 3%);
+        }
+      }
+
+      .create-collection-button {
+        background-color: lighten($navbarBlue, 20%);
+
+        &:hover {
+          background-color: lighten($navbarBlue, 15%);
+        }
+      }
+
+      .modal-actions {
+        margin-top: $mediumMargin;
+        display: flex;
+        justify-content: center;
+
+        .button {
+          padding: $basePadding 40px;
+        }
+        .button:first-child {
+          margin-right: $baseMargin;
+        }
+      }
+    }
+  }
+  
+}

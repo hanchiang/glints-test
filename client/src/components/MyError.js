@@ -7,6 +7,6 @@ MyError.propTypes = {
 
 export default function MyError(props) {
   return (
-    <p className={props.errors.length > 0 ? 'error-active' : 'error-hide'}>{props.errors.length > 0 && props.errors[0].message}</p>
+    <p className='error-active'>{props.errors.length > 0 && props.errors[0].message}</p>
   );
 }

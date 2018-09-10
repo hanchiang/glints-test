@@ -1,17 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 export default function NavBar() {
   return (
     <nav className="wrapper navbar">
       <div className="content-wrapper navbar-content">
-        <Link to='/' className="navbar-item">
+        <NavLink to='/' className="navbar-item link" activeClassName='active-link'>
           <h3 className="logo">Is It Open</h3>
-        </Link>
+        </NavLink>
 
-        <Link to='/collections' className="navbar-item">
-          <span>Collections</span>
-        </Link>
+        <NavLink to='/collections' className="navbar-item link" activeClassName='active-link'>
+          <span className="collection">Collections</span>
+        </NavLink>
 
       </div>
     </nav>

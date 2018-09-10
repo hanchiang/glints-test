@@ -10,9 +10,15 @@
 .list-body {
   border: 1px solid lighten($tableBorder, 10%);
   border-top: none;
+
+  & > a {
+    text-decoration: none;
+    color: $darkGrey;
+  }
 }
 
 .store-item {
+  position: relative;
   display: flex;
   justify-content: space-between;
   padding: $mediumPadding;
@@ -24,6 +30,10 @@
     background-color: darken($tableBGColor, 3%);
   }
 
+  &:hover .add-to-collection {
+    display: block;
+  }
+
   .store-timings {
     display: flex;
     flex-direction: column;
@@ -31,5 +41,13 @@
     .store-timing:first-child {
       margin-bottom: $baseMargin;
     }
+  }
+
+  .add-to-collection {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
   }
 }

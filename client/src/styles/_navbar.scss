@@ -13,11 +13,13 @@
     }
 
     .navbar-item {
-      text-decoration: none;
-      color: #fff;
-
       &:first-child {
         margin-right: $mediumMargin;
+      }
+
+      .collection {
+        margin-left: $mediumMargin;
+        font-size: $mediumFont;
       }
     }
   }

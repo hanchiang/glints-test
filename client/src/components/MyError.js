@@ -7,6 +7,10 @@ MyError.propTypes = {
 
 export default function MyError(props) {
   return (
-    <p className='error-active'>{props.errors.length > 0 && props.errors[0].message}</p>
+    <div>
+      {props.errors.length > 0 && props.errors.map(err =>
+        <p className="error-active">{err.message}</p>
+      )}
+    </div>
   );
 }

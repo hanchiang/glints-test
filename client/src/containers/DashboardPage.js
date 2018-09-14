@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { compose } from 'redux'
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -6,8 +7,9 @@ import AddCollectionModal from './AddCollectionModal'
 import NavBar from '../components/NavBar';
 import StoreList from '../components/StoreList';
 import StoreFilter from './StoreFilter';
-import WithSocket from '../HOC/WithSocket';
 import Loading from '../components/Loading';
+import WithSocket from '../HOC/WithSocket';
+import WithConnectedSocket from '../HOC/WithConnectedSocket';
 
 import { startSetStores, setStoresLoading } from '../redux/action/storeAction';
 import getVisibleStores from '../redux/selectors/storeSelector';
@@ -16,11 +18,11 @@ import { startAddToCollection, startCreateCollection, startGetCollection } from 
 class DashboardPage extends Component {
   constructor(props) {
     super(props)
-
     this.state = {
       showModal: false,
       storeId: ''
     }
+
 
     this.toggleModal = this.toggleModal.bind(this);
     this.setStoreId = this.setStoreId.bind(this);
@@ -28,8 +30,10 @@ class DashboardPage extends Component {
     this.onAddToCollection = this.onAddToCollection.bind(this);
   }
 
-  componentDidMount() {
-    if (this.props.stores.length === 0) {
+  componentDidUpdate(prevProps) {
+    // Wait for collection to be loaded in WithConnectedSocket before fetching stores
+    // To prevent creation of two sessions from two concurrent fetches
+    if (prevProps.loadingCollection && !this.props.loadingCollection && this.props.stores.length === 0) {
       this.props.fetchStore();
     }
   }
@@ -57,20 +61,13 @@ class DashboardPage extends Component {
       <div>
         <NavBar />
         <StoreFilter />
-        {
-          this.props.isLoadingStore ?
-            <Loading /> : (
-              <StoreList
-                stores={this.props.stores}
-                isLoading={this.props.isLoadingStore}
-                errors={this.props.storeErrors}
-                toggleModal={this.toggleModal}
-                setStoreId={this.setStoreId}
-              />
-
-              
-            )
-        }
+        <StoreList
+          stores={this.props.stores}
+          isLoading={this.props.isLoadingStore}
+          errors={this.props.storeErrors || []}
+          toggleModal={this.toggleModal}
+          setStoreId={this.setStoreId}
+        />
         <AddCollectionModal
           showModal={this.state.showModal}
           toggleModal={this.toggleModal}
@@ -79,6 +76,7 @@ class DashboardPage extends Component {
           collections={this.props.collections}
           updatingCollection={this.props.updatingCollection}
           fetchCollection={this.props.fetchCollection}
+          socket={this.props.socket}
         /> 
       </div>
     )
@@ -99,10 +97,11 @@ const mapStateToProps = (state) => ({
   isLoadingStore: state.storeState.isLoading,
   storeErrors: state.storeState.errors,
   // users
-  isLoadingCollection: state.userState.isLoading,
+  loadingCollection: state.userState.isLoading,
   updatingCollection: state.userState.updatingCollection,
   collections: state.userState.collections,
-  userErrors: state.userState.errors
+  userErrors: state.userState.errors,
+  userId: state.userState.id
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -112,4 +111,9 @@ const mapDispatchToProps = (dispatch) => ({
   fetchCollection: () => dispatch(startGetCollection())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(WithSocket(DashboardPage));
+// export default connect(mapStateToProps, mapDispatchToProps)(WithSocket(DashboardPage));
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  WithSocket,
+  WithConnectedSocket,
+)(DashboardPage);

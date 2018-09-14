@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// TODO: oh no, StoreItem is not reusable anymore..
 export default function StoreItem(props) {
   const toggleModal = () => {
     props.setStoreId(props.store._id);

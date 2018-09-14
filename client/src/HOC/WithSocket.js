@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import SocketContext from '../socket/socketContext';
 
 export default function WithSocket(MyComponent) {
@@ -7,7 +8,13 @@ export default function WithSocket(MyComponent) {
       return (
         <SocketContext.Consumer>
           {
-            socket => <MyComponent socket={socket} {...this.props} />
+            socket => {
+              socket.on('connect', () => {
+                console.log('conected to socket!');
+              })
+
+              return <MyComponent socket={socket} {...this.props} />
+            }
           }
         </SocketContext.Consumer>
       )

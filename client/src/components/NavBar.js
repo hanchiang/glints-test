@@ -13,6 +13,11 @@ export default function NavBar() {
           <span className="collection">Collections</span>
         </NavLink>
 
+        <NavLink to='/invite' className="navbar-item link" activeClassName='active-link'>
+          <span className="collection">Invite</span>
+        </NavLink>
+        
+
       </div>
     </nav>
   );

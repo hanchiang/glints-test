@@ -7,6 +7,7 @@ import Api from '../../api';
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 function* handleSetStores(action) {
+
   try {
     yield put(setStoresLoading(true));
     const { data: stores } = yield call(Api.getStores);

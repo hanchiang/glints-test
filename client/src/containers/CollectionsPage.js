@@ -1,21 +1,19 @@
 import React, { Component } from 'react';
+import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import NavBar from '../components/NavBar';
 import MyError from '../components/MyError';
-import { startCreateCollection, startGetCollection } from '../redux/action/userAction';
+import WithSocket from '../HOC/WithSocket'
+import WithConnectedSocket from '../HOC/WithConnectedSocket';
 
-class ColectionsPage extends Component {
+import { startCreateCollection } from '../redux/action/userAction';
+
+class CollectionsPage extends Component {
   constructor(props) {
     super(props);
-  }
-
-  componentDidMount() {
-    if (this.props.collections.length === 0) {
-      this.props.fetchCollection();
-    }
   }
 
   render() {
@@ -51,9 +49,8 @@ class ColectionsPage extends Component {
   }
 }
 
-ColectionsPage.propTypes = {
+CollectionsPage.propTypes = {
   createCollection: PropTypes.func.isRequired,
-  fetchCollection: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   updatingCollection: PropTypes.bool.isRequired,
   errors: PropTypes.array
@@ -67,8 +64,11 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  createCollection: (name, storeId) => dispatch(startCreateCollection(name, storeId)),
-  fetchCollection: () => dispatch(startGetCollection())
+  createCollection: (name, storeId) => dispatch(startCreateCollection(name, storeId))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ColectionsPage);
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  WithSocket,
+  WithConnectedSocket
+)(CollectionsPage);

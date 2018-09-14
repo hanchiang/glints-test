@@ -22,9 +22,11 @@ export default class AddCollectionModal extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    // TODO: LOADING SPINNER
     if (!prevProps.showModal && this.props.showModal && this.props.collections.length === 0) {
       this.props.fetchCollection();
+    }
+    if (prevProps.updatingCollection && !this.props.updatingCollection) {
+      this.props.socket.emit('update_collection');
     }
   }
 

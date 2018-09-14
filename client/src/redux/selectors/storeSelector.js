@@ -10,7 +10,8 @@ const correctDayOrder = (day) => {
 }
 
 const getVisibleStores = (stores, filterDate) => {
-  if (filterDate == null) return stores;
+  if (!filterDate) return stores;
+  else if (!stores) return [];
 
   const filterDay = correctDayOrder(filterDate.day());
   const filterTime = filterDate.hour() * 100 + filterDate.minute();

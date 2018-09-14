@@ -59,3 +59,8 @@ body {
       color: darken($grey, 10%);
     }
   }
+
+.success-message {
+  background-color: lighten(green, 35%);
+  padding: $basePadding;
+}

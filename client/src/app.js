@@ -15,15 +15,6 @@ import './styles/styles.scss';
 
 const socket = io('localhost:3000');
 
-socket.on('connect', () => {
-  console.log(socket.id);
-  console.log('conected to socket!');
-
-  socket.emit('test', 'some data', (data) => {
-    console.log('Received from server: ' + data);
-  })
-})
-
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -31,11 +22,11 @@ export default class App extends Component {
 
   render() {
     return (
-      <SocketContext.Provider value={socket}>
-        <Provider store={store}>
+      <Provider store={store}>
+        <SocketContext.Provider value={socket}>
           <Routes />
-        </Provider>
-      </SocketContext.Provider>
+        </SocketContext.Provider>
+      </Provider>
     )
   }
 }

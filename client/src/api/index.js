@@ -9,12 +9,15 @@ function createApi() {
     withCredentials: true
   })
 
-  const getStores = () => api.get('/stores').catch(apiErrorTransform);
+  const getStores = () => api.get('/stores')
+    .catch(apiErrorTransform);
 
   const createCollection = ([name, store]) => api.post('/users/collections', { name, store })
     .catch(apiErrorTransform);
 
-  const getCollection = () => api.get('/users/collections').catch(apiErrorTransform);
+  const getCollection = (referrer) => {
+    return api.get('/users/collections', referrer && { params: { referrer } }).catch(apiErrorTransform);
+  }
 
   const addToCollection = ([collectionId, storeId]) => api.patch('/users/collections', {
     _id: collectionId,
@@ -28,9 +31,15 @@ function createApi() {
     operation: 'delete'
   }).catch(apiErrorTransform);
 
-  const updateCollection = (collectionId, name) => api.patch('/users/collections', {
+  const updateCollection = ([collectionId, name]) => api.patch('/users/collections', {
     _id: collectionId,
-    name
+    name,
+    operation: 'update'
+  }).catch(apiErrorTransform);
+
+  const inviteUser = ([referrer, email]) => api.post('/invite', {
+    referrer,
+    email
   }).catch(apiErrorTransform);
 
   return {
@@ -39,7 +48,8 @@ function createApi() {
     getCollection,
     addToCollection,
     deleteFromCollection,
-    updateCollection
+    updateCollection,
+    inviteUser
   };
 }
 

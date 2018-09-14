@@ -1,9 +1,11 @@
+const logger = require('../utils/logger');
+
 
 exports.connect = (server) => {
   const io = require('socket.io')(server);
 
   io.on('connection', (client) => {
-    console.log('client connected');
+    logger.info('socket client connected');
 
     client.on('join_room', (roomId, cb) => {
       client.join(roomId, () => {
@@ -11,6 +13,13 @@ exports.connect = (server) => {
         client.to(roomId).emit('user_joined', 'A User joined the room!')
       })
     });
+
+    // update collection name | add store to collection | delete store from collection
+    client.on('update_collection', () => {
+      const rooms = Object.keys(client.rooms);
+      logger.info('emit collection updated to: ' + rooms[1]);
+      client.to(rooms[1]).emit('collection_updated');
+    })
   });
 }
 

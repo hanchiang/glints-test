@@ -52,11 +52,10 @@ exports.getUserCollection = async (req, res) => {
     }
   ])
   .toArray();
-  console.log(results);
   res.json({ id: req.sessionID, referrer: user.referrer, collections: results });
 }
 
-// TODO: Create and add to collection, instead of just creating collection.
+// Create and add to collection, instead of just creating collection.
 // Because it breaks the getCollection() pipeline and wont return empty collections.
 exports.createCollection = async (req, res) => {
   if (!req.body.store || !req.body.name) {
@@ -64,6 +63,9 @@ exports.createCollection = async (req, res) => {
   }
 
   const user = await db.get().collection('users').findOne({ _id: req.sessionID });
+  const { referrer } = user;
+  const idToMatch = referrer ? referrer : req.sessionID;
+
   let colSlug = slug(req.body.name);
   let slugRegex = new RegExp(`${colSlug}(-\d+)?`)
   const sameSlugs = user.collections
@@ -75,7 +77,7 @@ exports.createCollection = async (req, res) => {
   }
 
   const result = await db.get().collection('users').findOneAndUpdate(
-    { _id: req.sessionID },
+    { _id: idToMatch },
     {
       $push: {
         collections: {
@@ -99,8 +101,13 @@ exports.createCollection = async (req, res) => {
   }
 }
 
+// add(store) | delete(store) | update(collection name)
+// TODO: Need to delete collection if there are no more stores in it!
 exports.updateCollection = async (req, res) => {
-  // add(store) | delete(store) | update(collection name)
+  const user = await db.get().collection('users').findOne({ _id: req.sessionID });
+  const { referrer } = user;
+  const idToMatch = referrer ? referrer : req.sessionID;
+
   let operation;
   let update = {};
 
@@ -111,13 +118,16 @@ exports.updateCollection = async (req, res) => {
 
   if (operation === '$set') {
     update = { 'collections.$.name': req.body.name };
-  } else {
+  } else if (operation === '$pull') {
+    update = { 'collections.$': { $exists: true, 'collections.$.stores': { $size: 1 } } }
+  }
+  else {
     update = { 'collections.$.stores': ObjectID(req.body.store) };
   }
 
-  // TODO: remove ObjectID() for collections._id
   const result = await db.get().collection('users').updateOne(
-    { _id: req.sessionID,
+    {
+      _id: idToMatch,
       'collections._id': ObjectID(req.body._id)
     },
     { [operation]: update }
@@ -130,22 +140,11 @@ exports.updateCollection = async (req, res) => {
   }
 }
 
-// TODO: Allow user to set/change name
 exports.invite = async(req, res) => {
-  const { referrer, referrerName, email } = req.body;
+  const { referrer, email } = req.body;
   const result = await sendEmail({
     referrer,
-    referrerName,
     to: email
   })
-  console.log(result);
-
-  // await db.get().collection('users').updateOne(
-  //   { _id: req.sessionID },
-  //   { $set: {
-  //     referrer
-  //   }}
-  // )
-  // console.log(`Updated referrer of ${req.sessionID} to ${referrer} `);
   res.json({ message: `Successfully invited user ${req.sessionID}` });
 }

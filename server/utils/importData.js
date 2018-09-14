@@ -4,6 +4,7 @@ const _ = require('lodash');
 const slug = require('slug');
 
 const db = require('../db');
+const logger = require('../utils/logger');
 
 const re = /([^0-9]*)\s(\d+\s\w+|\d+:\d+\s\w+)\s-\s(\d+\s\w+|\d+:\d+\s\w+)/;
 const mapDaysToInt = {
@@ -141,28 +142,27 @@ function formatData(stores) {
 
 		results.push(result);
 	}
-	// console.log(results);
 	return results;
 }
 
 async function importData() {
 	const num = await db.get().collection('stores').countDocuments();
 	if (num === 0) {
-		console.log('No documents in stores. Importing data...');
+		logger.info('No documents in stores. Importing data...');
 
 		axios.get('https://gist.githubusercontent.com/seahyc/7ee4da8a3fb75a13739bdf5549172b1f/raw/2a8f405af936ca316ca20dd08f349560ceae5938/hours.csv')
 			.then(async res => {
 				const parsed = papa.parse(res.data, { skipEmptyLines: true }).data;
 				const result = formatData(parsed);
 				await db.get().collection('stores').insertMany(result);
-				console.log('data loaded');
+				logger.info('data loaded');
 			})
 			.catch(err => {
-				console.log(err);
+				logger.error({err});
 				throw err;
 			})
 	} else {
-		console.log('Data already loaded in database');
+		logger.info('Data already loaded in database');
 	}
 }
 

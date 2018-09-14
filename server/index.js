@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const app = require('./app');
 const db = require('./db');
+const logger = require('./utils/logger');
 
 const server = require('http').createServer(app);
 
@@ -13,7 +14,7 @@ db.connect()
   .then(() => {
     require('./socket').connect(server);
     server.listen(port, () => {
-      console.log('Express is running on port: ' + port);
+      logger.info('Express is running on port: ' + port);
       importData();
     })
   });

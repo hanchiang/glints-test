@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const errorHandlers = require('./handlers/errorHandlers');
 const routes = require('./routes');
 const db = require('./db');
+const logger = require('./utils/logger');
 
 app.use(session({
   secret: process.env.SECRET,
@@ -17,7 +18,7 @@ app.use(session({
 
 // Create a user for each session
 app.use(async (req, res, next) => {
-  console.log(`session id: ${req.sessionID}, req method: ${req.method}`);
+  logger.info(`session id: ${req.sessionID}, req method: ${req.method}`);
   if (req.method !== 'OPTIONS' && !req.session.isUserCreated) {
     // referrer is sent as a query param via GET /users/collections, if user is invited
     const { referrer } = req.query;
@@ -32,6 +33,9 @@ app.use(async (req, res, next) => {
       }
       await db.get().collection('users').insertOne(newUser);
       req.session.isUserCreated = true;
+      if (referrer) {
+        req.session.referrer = referrer;
+      }
     } catch(err) {
       next(err);
     }

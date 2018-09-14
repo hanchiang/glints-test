@@ -1,5 +1,7 @@
 const { MongoClient } = require('mongodb');
 
+const logger = require('../utils/logger');
+
 let db;
 
 exports.connect = () => {
@@ -9,10 +11,10 @@ exports.connect = () => {
     })
       .then(client => {
         db = client.db();
-        console.log('connected to database 😊 😊 😊');
+        logger.info('connected to database 😊 😊 😊');
       })
       .catch(err => {
-        console.log(err);
+        logger.error({err});
         throw err;
       })
   } else {

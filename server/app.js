@@ -19,12 +19,18 @@ app.use(session({
 app.use(async (req, res, next) => {
   console.log(`session id: ${req.sessionID}, req method: ${req.method}`);
   if (req.method !== 'OPTIONS' && !req.session.isUserCreated) {
+    // referrer is sent as a query param via GET /users/collections, if user is invited
+    const { referrer } = req.query;
     try {
-      const result = await db.get().collection('users').insertOne({
+      const newUser = {
         _id: req.sessionID,
         name: '',
         collections: []
-      });
+      }
+      if (referrer) {
+        newUser.referrer = referrer;
+      }
+      await db.get().collection('users').insertOne(newUser);
       req.session.isUserCreated = true;
     } catch(err) {
       next(err);

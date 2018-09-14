@@ -18,6 +18,7 @@
     "express-session": "^1.15.6",
     "lodash": "^4.17.10",
     "mongodb": "^3.1.4",
+    "nodemailer": "^4.6.8",
     "papaparse": "^4.6.0",
     "slug": "^0.9.1",
     "socket.io": "^2.1.1"

@@ -3,6 +3,7 @@ const slug = require('slug');
 
 const db = require('../db');
 const formatReadableData = require('../utils/formatReadableData');
+const sendEmail = require('../utils/mail');
 
 
 exports.getStores = async (req, res) => {
@@ -11,8 +12,12 @@ exports.getStores = async (req, res) => {
 }
 
 exports.getUserCollection = async (req, res) => {
+  const user = await db.get().collection('users').findOne({ _id: req.sessionID });
+  const { referrer } = user;
+
+  const idToMatch = referrer ? referrer : req.sessionID;
   const results = await db.get().collection('users').aggregate([
-    { $match: { _id: req.sessionID } },
+    { $match: { _id: idToMatch } },
     { $unwind: { path: '$collections' }},
     { $unwind: { path: '$collections.stores' }},
     { $lookup: 
@@ -47,7 +52,8 @@ exports.getUserCollection = async (req, res) => {
     }
   ])
   .toArray();
-  res.json({ id: req.sessionID, collections: results });
+  console.log(results);
+  res.json({ id: req.sessionID, referrer: user.referrer, collections: results });
 }
 
 // TODO: Create and add to collection, instead of just creating collection.
@@ -122,4 +128,24 @@ exports.updateCollection = async (req, res) => {
   } else {
     throw new Error('Unable to update collection');
   }
+}
+
+// TODO: Allow user to set/change name
+exports.invite = async(req, res) => {
+  const { referrer, referrerName, email } = req.body;
+  const result = await sendEmail({
+    referrer,
+    referrerName,
+    to: email
+  })
+  console.log(result);
+
+  // await db.get().collection('users').updateOne(
+  //   { _id: req.sessionID },
+  //   { $set: {
+  //     referrer
+  //   }}
+  // )
+  // console.log(`Updated referrer of ${req.sessionID} to ${referrer} `);
+  res.json({ message: `Successfully invited user ${req.sessionID}` });
 }

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const storeController = require('../controllers');
+const Controller = require('../controllers');
 const { catchErrors } = require('../handlers/errorHandlers');
 
 router.get('/', (req, res) => {
@@ -10,11 +10,12 @@ router.get('/', (req, res) => {
   });
 })
 
-router.get('/stores', catchErrors(storeController.getStores));
+router.get('/stores', catchErrors(Controller.getStores));
 
-router.get('/users/collections', catchErrors(storeController.getUserCollection));
-router.post('/users/collections', catchErrors(storeController.createCollection));
-router.patch('/users/collections', catchErrors(storeController.updateCollection));
+router.get('/users/collections', catchErrors(Controller.getUserCollection));
+router.post('/users/collections', catchErrors(Controller.createCollection));
+router.patch('/users/collections', catchErrors(Controller.updateCollection));
+router.post('/invite', catchErrors(Controller.invite));
 
 
 module.exports = router;

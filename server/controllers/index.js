@@ -118,10 +118,7 @@ exports.updateCollection = async (req, res) => {
 
   if (operation === '$set') {
     update = { 'collections.$.name': req.body.name };
-  } else if (operation === '$pull') {
-    update = { 'collections.$': { $exists: true, 'collections.$.stores': { $size: 1 } } }
-  }
-  else {
+  } else {
     update = { 'collections.$.stores': ObjectID(req.body.store) };
   }
 

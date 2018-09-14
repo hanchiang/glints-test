@@ -9,8 +9,6 @@ exports.connect = (server) => {
 
     client.on('join_room', (roomId, cb) => {
       client.join(roomId, () => {
-        cb('Joined room: ' + roomId);
-        client.to(roomId).emit('user_joined', 'A User joined the room!')
       })
     });
 

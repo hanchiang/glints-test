@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 
 exports.catchErrors = (fn) => {
   return function(req, res, next) {
@@ -20,5 +21,6 @@ exports.errors = (err, req, res, next) => {
   if (process.env.NODE_ENV !== 'production') {
     error.stack = err.stack
   }
+  logger.error({err: error});
   res.status(err.status || 500).json({ error });
 };

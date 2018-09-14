@@ -13,7 +13,7 @@ import Routes from './routes';
 import 'normalize.css';
 import './styles/styles.scss';
 
-const socket = io('localhost:3000');
+const socket = io(process.env.SERVER_URL);
 
 export default class App extends Component {
   constructor(props) {

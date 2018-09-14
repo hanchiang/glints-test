@@ -4,7 +4,7 @@ import apiErrorTransform from '../transforms/apiErrorTransform';
 
 function createApi() {
   const api = axios.create({
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.SERVER_URL,
     timeout: 10000,
     withCredentials: true
   })

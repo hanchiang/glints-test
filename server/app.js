@@ -9,6 +9,8 @@ const routes = require('./routes');
 const db = require('./db');
 const logger = require('./utils/logger');
 
+require('dotenv').config();
+
 app.use(session({
   secret: process.env.SECRET,
   resave: false,
@@ -45,7 +47,7 @@ app.use(async (req, res, next) => {
 
 // enable CORS
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+  res.header("Access-Control-Allow-Origin", process.env.SERVER_URL);
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', ['GET', 'PUT', 'POST', 'DELETE', 'PATCH']);

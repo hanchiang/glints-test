@@ -4,8 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development nodemon index.js | ./node_modules/.bin/bunyan",
+    "start": "node index.js | ./node_modules/.bin/bunyan",
+    "dev": "cross-env NODE_ENV=development nodemon index.js | ./node_modules/.bin/bunyan",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": "8.11.4"
   },
   "author": "",
   "license": "ISC",

@@ -3,6 +3,14 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+const node_env = process.env.NODE_ENV || 'development';
+if (node_env === 'development') {
+  require('dotenv').config({ path: '.env.dev' });
+} else {
+  require('dotenv').config();
+}
+
+
 module.exports = {
   entry: ['@babel/polyfill', './src/index.js'],
   output: {
@@ -59,12 +67,15 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html',
       filename: './index.html'
-    })
+    }),
+    new webpack.DefinePlugin({
+      'process.env.SERVER_URL': JSON.stringify(process.env.SERVER_URL)
+    }), 
   ],
   devServer: {
     contentBase: path.join(__dirname, 'public'),
     hot: true,
     historyApiFallback: true
   },
-  devtool: 'inline-source-map'
+  devtool: 'source-map'
 }

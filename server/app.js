@@ -9,7 +9,9 @@ const routes = require('./routes');
 const db = require('./db');
 const logger = require('./utils/logger');
 
-require('dotenv').config();
+if (process.env.NODE_ENV === 'development') {
+  require('dotenv').config();
+}
 
 app.use(session({
   secret: process.env.SECRET,
@@ -35,9 +37,9 @@ app.use(async (req, res, next) => {
       }
       await db.get().collection('users').insertOne(newUser);
       req.session.isUserCreated = true;
-      if (referrer) {
-        req.session.referrer = referrer;
-      }
+      // if (referrer) {
+      //   req.session.referrer = referrer;
+      // }
     } catch(err) {
       next(err);
     }
@@ -47,7 +49,7 @@ app.use(async (req, res, next) => {
 
 // enable CORS
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", process.env.SERVER_URL);
+  res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', ['GET', 'PUT', 'POST', 'DELETE', 'PATCH']);

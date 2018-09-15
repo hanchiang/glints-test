@@ -2,12 +2,11 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const node_env = process.env.NODE_ENV || 'development';
 if (node_env === 'development') {
   require('dotenv').config({ path: '.env.dev' });
-} else {
-  require('dotenv').config();
 }
 
 
@@ -77,5 +76,31 @@ module.exports = {
     hot: true,
     historyApiFallback: true
   },
-  devtool: 'source-map'
+  devtool: 'source-map',
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new UglifyJsPlugin({
+        test: /\.js(\?.*)?$/i,
+        sourceMap: true,
+        uglifyOptions: {
+          compress: {
+            inline: false
+          }
+        }
+      })
+    ],
+    runtimeChunk: false,
+    splitChunks: {
+      cacheGroups: {
+        default: false,
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor_app',
+          chunks: 'all',
+          minChunks: 2
+        }
+      }
+    }
+  },
 }
